@@ -4,7 +4,10 @@ AI-powered RFP response generator using Claude, grounded in a retrieval layer ov
 past RFP answers — built to cut down the hours Sales/Solutions Engineers spend
 drafting consistent, accurate RFP responses under deadline pressure.
 
-**[Live demo →](#)** *(add your deployed Streamlit URL here once live)*
+**Runs in Demo Mode out of the box — no API key required.** Demo Mode synthesizes
+responses directly from the knowledge base's retrieval layer, so you can clone and
+run this immediately to see the retrieval-grounding behavior. Flip the toggle off
+and add an Anthropic API key to generate fully original responses with Claude.
 
 ![screenshot placeholder](docs/screenshot.png)
 
@@ -38,12 +41,16 @@ nobody has a single source of truth for "what did we say last time."
 git clone <your-repo-url>
 cd rfp-automation-tool
 pip install -r requirements.txt
+streamlit run app.py
+```
 
-# Add your API key
+That's it — it opens in **Demo Mode** by default, no API key needed. To generate
+live responses with Claude instead of demo-mode retrieval, toggle Demo Mode off
+in the sidebar and add a key:
+
+```bash
 cp .streamlit/secrets.toml.example .streamlit/secrets.toml
 # then edit .streamlit/secrets.toml with your real Anthropic API key
-
-streamlit run app.py
 ```
 
 ## Deploying (free, ~5 minutes)

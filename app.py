@@ -96,6 +96,36 @@ def generate_response(client, question, retrieved, extra_context):
     return message.content[0].text
 
 
+def generate_demo_response(question, retrieved, extra_context):
+    """
+    Synthesizes a response from retrieved knowledge-base answers without
+    calling any API. Lets the app run and demo fully offline, with no key
+    and no cost, while still showing the retrieval-grounding behavior.
+    """
+    if retrieved:
+        best_score, best_item = retrieved[0]
+        answer = best_item["answer"]
+        if len(retrieved) > 1:
+            answer += " " + retrieved[1][1]["answer"]
+        if extra_context:
+            answer += f" This response has been tailored to reflect: {extra_context.strip()}"
+        return answer
+
+    if extra_context:
+        return (
+            "[Demo mode] No close match found in the knowledge base for this question. "
+            "In live mode, Claude would draft a response grounded in your provided context: "
+            f"\"{extra_context.strip()}\". Add more entries to the knowledge base to see "
+            "retrieval-grounded answers here."
+        )
+
+    return (
+        "[Demo mode] No close match found in the knowledge base for this question. "
+        "Add a relevant past answer in the sidebar, or connect a live Anthropic API key "
+        "to have Claude draft an original response."
+    )
+
+
 # ---------------------------------------------------------------------------
 # Session state
 # ---------------------------------------------------------------------------
@@ -109,14 +139,24 @@ with st.sidebar:
     st.header("⚙️ Setup")
 
     api_key_present = bool(get_api_key())
-    if not api_key_present:
-        st.warning("No API key found in secrets.")
-        manual_key = st.text_input("Anthropic API key", type="password")
-        if manual_key:
-            st.session_state.manual_api_key = manual_key
-            api_key_present = True
+
+    demo_mode = st.toggle(
+        "🎭 Demo Mode (no API key needed)",
+        value=not api_key_present,
+        help="Runs fully offline using retrieval over the knowledge base only — no API calls, no cost, no key required.",
+    )
+
+    if not demo_mode:
+        if not api_key_present:
+            st.warning("No API key found in secrets.")
+            manual_key = st.text_input("Anthropic API key", type="password")
+            if manual_key:
+                st.session_state.manual_api_key = manual_key
+                api_key_present = True
+        else:
+            st.success("API key loaded ✓")
     else:
-        st.success("API key loaded ✓")
+        st.info("Demo mode is on — responses are synthesized from the knowledge base, not generated live by Claude.")
 
     st.divider()
     st.header("📚 Knowledge Base")
@@ -172,15 +212,18 @@ with tab1:
     )
 
     if st.button("Generate Response", type="primary", key="single_gen"):
-        if not api_key_present:
-            st.error("Add your Anthropic API key in the sidebar first.")
+        if not demo_mode and not api_key_present:
+            st.error("Add your Anthropic API key in the sidebar, or turn on Demo Mode.")
         elif not question.strip():
             st.error("Paste a question first.")
         else:
             with st.spinner("Retrieving relevant past answers and drafting response..."):
-                client = anthropic.Anthropic(api_key=get_api_key())
                 retrieved = retrieve_relevant_answers(question, st.session_state.kb)
-                answer = generate_response(client, question, retrieved, extra_context)
+                if demo_mode:
+                    answer = generate_demo_response(question, retrieved, extra_context)
+                else:
+                    client = anthropic.Anthropic(api_key=get_api_key())
+                    answer = generate_response(client, question, retrieved, extra_context)
 
             if retrieved:
                 with st.expander(f"🔍 Used {len(retrieved)} past answer(s) as grounding"):
@@ -206,12 +249,12 @@ with tab2:
         st.dataframe(bulk_df.head(10))
 
         if st.button("Generate All Responses", type="primary", key="bulk_gen"):
-            if not api_key_present:
-                st.error("Add your Anthropic API key in the sidebar first.")
+            if not demo_mode and not api_key_present:
+                st.error("Add your Anthropic API key in the sidebar, or turn on Demo Mode.")
             elif "question" not in bulk_df.columns:
                 st.error("CSV must have a 'question' column.")
             else:
-                client = anthropic.Anthropic(api_key=get_api_key())
+                client = None if demo_mode else anthropic.Anthropic(api_key=get_api_key())
                 results = []
                 progress = st.progress(0, text="Generating responses...")
 
@@ -219,7 +262,10 @@ with tab2:
                     q = row["question"]
                     ctx = row.get("context", "") if "context" in bulk_df.columns else ""
                     retrieved = retrieve_relevant_answers(q, st.session_state.kb)
-                    ans = generate_response(client, q, retrieved, ctx)
+                    if demo_mode:
+                        ans = generate_demo_response(q, retrieved, ctx)
+                    else:
+                        ans = generate_response(client, q, retrieved, ctx)
                     results.append({"question": q, "generated_answer": ans})
                     progress.progress((i + 1) / len(bulk_df), text=f"Generated {i+1}/{len(bulk_df)}")
 

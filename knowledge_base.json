@@ -1,0 +1,22 @@
+[
+  {
+    "question": "Does your platform support single sign-on (SSO)?",
+    "answer": "Yes, our platform supports SSO via SAML 2.0 and OAuth 2.0, and integrates with major identity providers including Okta, Azure AD, and Google Workspace."
+  },
+  {
+    "question": "What is your uptime SLA?",
+    "answer": "We guarantee 99.9% uptime for Enterprise customers, with real-time status published on our public status page and credits issued for any SLA breach."
+  },
+  {
+    "question": "Is your platform SOC 2 compliant?",
+    "answer": "Yes, we maintain SOC 2 Type II compliance, with annual third-party audits. Our compliance report is available under NDA upon request."
+  },
+  {
+    "question": "Can we deploy in a specific region for data residency requirements?",
+    "answer": "Yes, we support multi-region deployment including US, EU, and APAC data centers to meet data residency and sovereignty requirements."
+  },
+  {
+    "question": "What kind of customer support do you offer post-implementation?",
+    "answer": "Enterprise customers receive a dedicated Customer Success Manager, 24/7 support via chat and email, and a guaranteed 1-hour response time for critical issues."
+  }
+]

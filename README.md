@@ -1,39 +1,38 @@
-# RFP Automation Tool
+# SE Toolkit
 
-AI-powered RFP response generator using Claude, grounded in a retrieval layer over
-past RFP answers — built to cut down the hours Sales/Solutions Engineers spend
-drafting consistent, accurate RFP responses under deadline pressure.
+A set of tools built to demonstrate practical Solutions Engineering workflows —
+pre-sales deal support, post-sale customer health, and everywhere in between.
+Runs as a single Streamlit app with multiple pages, all in **Demo Mode by
+default — no API key, no cost, no setup required.**
 
-**Runs in Demo Mode out of the box — no API key required.** Demo Mode synthesizes
-responses directly from the knowledge base's retrieval layer, so you can clone and
-run this immediately to see the retrieval-grounding behavior. Flip the toggle off
-and add an Anthropic API key to generate fully original responses with Claude.
+## Tools included
 
-![screenshot placeholder](docs/screenshot.png)
+### 📄 RFP Automation Tool
+AI-powered RFP response generator using Claude, grounded in a retrieval layer
+over past RFP answers — cuts down the hours SEs spend drafting consistent,
+accurate RFP responses under deadline pressure.
 
-## The problem
+- Single-question and bulk CSV modes
+- TF-IDF retrieval over a knowledge base of past answers, so drafts stay
+  consistent instead of the model improvising
+- Runs in Demo Mode (no key needed) or live mode with a Claude API key
 
-RFP responses eat huge amounts of SE time and are often inconsistent across reps —
-different people answer the same question differently, facts drift over time, and
-nobody has a single source of truth for "what did we say last time."
+### 📡 API Monitoring Dashboard
+A lightweight integration-health dashboard — the kind of view an SE hands to a
+customer post-deployment so they can self-serve status checks instead of
+filing support tickets.
 
-## What this does
-
-- **Single-question mode** — paste one RFP question, get a drafted response instantly
-- **Bulk mode** — upload a CSV of RFP questions, get all responses generated and
-  exported as a CSV in one pass
-- **Retrieval-augmented generation** — every draft is grounded in a knowledge base
-  of past RFP answers (TF-IDF similarity search), so responses stay consistent with
-  what your team has actually said before, instead of the model improvising
-- **Editable knowledge base** — add new Q&A pairs directly in the UI or bulk-upload
-  via CSV as your answer library grows
+- Live-style status, latency trends, and an incident log across 4 simulated
+  integrations
+- Configurable alert threshold, refreshable simulated data ticks
+- Runs entirely on simulated data — no external services required
 
 ## Tech stack
 
-- **Streamlit** — UI
-- **Claude (Anthropic API)** — response generation
-- **scikit-learn (TF-IDF)** — lightweight retrieval layer over the knowledge base
-- **pandas** — bulk CSV processing
+- **Streamlit** — multi-page app UI
+- **Claude (Anthropic API)** — RFP response generation (optional, live mode only)
+- **scikit-learn (TF-IDF)** — retrieval layer for the RFP tool
+- **numpy / pandas** — simulated monitoring data and bulk processing
 
 ## Running locally
 
@@ -44,9 +43,11 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-That's it — it opens in **Demo Mode** by default, no API key needed. To generate
-live responses with Claude instead of demo-mode retrieval, toggle Demo Mode off
-in the sidebar and add a key:
+Opens a home page with links to both tools. Everything runs in Demo Mode out
+of the box — no setup needed to explore either tool.
+
+To use live Claude generation in the RFP tool instead of demo-mode retrieval,
+toggle Demo Mode off on that page and add a key:
 
 ```bash
 cp .streamlit/secrets.toml.example .streamlit/secrets.toml
@@ -55,27 +56,29 @@ cp .streamlit/secrets.toml.example .streamlit/secrets.toml
 
 ## Deploying (free, ~5 minutes)
 
-1. Push this repo to GitHub (public repo is fine — secrets.toml is gitignored,
-   so your API key never gets committed)
+1. Push this repo to GitHub (public repo is fine — `secrets.toml` is
+   gitignored, so your API key never gets committed)
 2. Go to [share.streamlit.io](https://share.streamlit.io), sign in with GitHub
 3. Click **New app**, select this repo and `app.py` as the entry point
-4. Under **Advanced settings → Secrets**, paste:
+4. (Optional, only if using live Claude generation) Under **Advanced settings
+   → Secrets**, add:
    ```toml
    ANTHROPIC_API_KEY = "sk-ant-your-real-key"
    ```
 5. Deploy — you'll get a public URL like `your-app-name.streamlit.app`
 
-**Note:** free-tier apps sleep after ~12 hours of no traffic. The first visitor
-after a sleep period waits ~20-30 seconds for it to wake up — this is normal, not
-a bug.
+**Note:** free-tier apps sleep after ~12 hours of no traffic. The first
+visitor after a sleep period waits ~20-30 seconds for it to wake up — this is
+normal, not a bug.
 
 ## Sample data
 
-`knowledge_base.json` ships with 5 example RFP Q&A pairs (SSO, uptime SLA, SOC 2,
-data residency, support) so the demo works out of the box. Replace with your own
-team's answers, or upload a CSV via the sidebar.
+- `knowledge_base.json` ships with 5 example RFP Q&A pairs (SSO, uptime SLA,
+  SOC 2, data residency, support) so the RFP tool's demo works out of the box
+- The monitoring dashboard generates its own simulated data on load, with a
+  refresh button to simulate a new data tick
 
-CSV format for bulk knowledge base upload:
+CSV format for bulk knowledge base upload (RFP tool):
 ```csv
 question,answer
 "Do you support SSO?","Yes, via SAML 2.0 and OAuth 2.0..."
@@ -89,10 +92,10 @@ question,context
 
 ## Why this project
 
-Built to demonstrate the kind of technical + business-facing tooling a Solutions
-Engineer builds for their own team: something that saves real hours, is grounded
-in facts (not hallucinated), and can be handed to a non-technical teammate to use
-without them touching code.
+Built to demonstrate the kind of technical + business-facing tooling a
+Solutions Engineer builds for their own team: tools that save real hours, stay
+grounded in facts instead of hallucinating, and can be handed to a
+non-technical teammate — or a customer — without them touching code.
 
 ---
 Built by Srabana Guha · Staff SE, 12+ years at Uber, Walmart Connect, and Hulu

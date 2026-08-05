@@ -24,8 +24,16 @@ filing support tickets.
 
 - Live-style status, latency trends, and an incident log across 4 simulated
   integrations
+- **Endpoint-level detail** — each service breaks down into its individual
+  endpoints (status, latency, uptime), not just a single aggregate number
+- **Customer Report tab** — a plain-language summary suitable to hand a
+  customer directly, plus a **downloadable PDF report** (generated with
+  reportlab, including an embedded latency chart and executive summary)
 - Configurable alert threshold, refreshable simulated data ticks
 - Runs entirely on simulated data — no external services required
+- A distinct visual identity (dark control-room theme, signal-colored status
+  accents, monospace data figures) shared across the whole toolkit via a
+  common `theme.py` module
 
 ## Tech stack
 
@@ -33,6 +41,7 @@ filing support tickets.
 - **Claude (Anthropic API)** — RFP response generation (optional, live mode only)
 - **scikit-learn (TF-IDF)** — retrieval layer for the RFP tool
 - **numpy / pandas** — simulated monitoring data and bulk processing
+- **reportlab / matplotlib** — PDF customer report generation with embedded charts
 
 ## Running locally
 

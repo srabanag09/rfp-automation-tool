@@ -17,10 +17,13 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import anthropic
 
+from theme import inject_theme
+
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
 st.set_page_config(page_title="RFP Automation Tool", page_icon="📄", layout="wide")
+inject_theme()
 
 KB_PATH = "knowledge_base.json"
 MODEL = "claude-sonnet-5"
@@ -40,8 +43,13 @@ def save_knowledge_base(kb):
 
 def get_api_key():
     # Priority: Streamlit secrets (for deployed app) -> env var -> sidebar input
-    if "ANTHROPIC_API_KEY" in st.secrets:
-        return st.secrets["ANTHROPIC_API_KEY"]
+    # st.secrets raises StreamlitSecretNotFoundError if no secrets.toml exists at
+    # all (not just if the key is missing), so this must be caught explicitly.
+    try:
+        if "ANTHROPIC_API_KEY" in st.secrets:
+            return st.secrets["ANTHROPIC_API_KEY"]
+    except Exception:
+        pass
     if os.environ.get("ANTHROPIC_API_KEY"):
         return os.environ["ANTHROPIC_API_KEY"]
     return st.session_state.get("manual_api_key", "")

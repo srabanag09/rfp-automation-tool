@@ -8,8 +8,10 @@ Built by Srabana Guha
 """
 
 import streamlit as st
+from theme import inject_theme, section_eyebrow
 
 st.set_page_config(page_title="SE Toolkit — Srabana Guha", page_icon="🧰", layout="wide")
+inject_theme()
 
 st.title("🧰 SE Toolkit")
 st.caption("A set of tools built to solve real Solutions Engineering problems — pre-sales, post-sale, and everywhere in between.")

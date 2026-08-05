@@ -3,3 +3,5 @@ anthropic
 pandas
 scikit-learn
 numpy
+reportlab
+matplotlib

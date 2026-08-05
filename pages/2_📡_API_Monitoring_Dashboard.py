@@ -5,8 +5,6 @@ an SE hands to a customer post-deployment to self-serve status checks instead
 of filing support tickets.
 
 Runs entirely on simulated data. No external services or API keys required.
-
-Built by Srabana Guha
 """
 
 import io
@@ -333,4 +331,4 @@ with tabs[-1]:
         )
 
 st.divider()
-st.caption("Built with Streamlit · Simulated monitoring data · [Srabana Guha](https://www.linkedin.com/)")
+st.caption("Built with Streamlit · Simulated monitoring data")

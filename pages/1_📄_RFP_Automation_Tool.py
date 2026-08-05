@@ -2,8 +2,6 @@
 RFP Automation Tool
 AI-powered RFP response generator using Claude, with retrieval-augmented
 generation over a knowledge base of past RFP answers.
-
-Built by Srabana Guha
 """
 
 import json
@@ -291,4 +289,4 @@ with tab2:
                 )
 
 st.divider()
-st.caption("Built with Streamlit + Claude · [Srabana Guha](https://www.linkedin.com/)")
+st.caption("Built with Streamlit + Claude")

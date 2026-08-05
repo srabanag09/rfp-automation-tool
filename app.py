@@ -1,24 +1,19 @@
 """
 SE Toolkit — Home
-A collection of tools built to demonstrate practical Solutions Engineering
-workflows: pre-sales deal support, post-sale customer health, and technical
-scoping.
-
-Built by Srabana Guha
+A collection of tools for practical Solutions Engineering workflows:
+pre-sales deal support, post-sale customer health, and technical scoping.
 """
 
 import streamlit as st
 from theme import inject_theme, section_eyebrow
 
-st.set_page_config(page_title="SE Toolkit — Srabana Guha", page_icon="🧰", layout="wide")
+st.set_page_config(page_title="SE Toolkit", page_icon="🧰", layout="wide")
 inject_theme()
 
 st.title("🧰 SE Toolkit")
 st.caption("A set of tools built to solve real Solutions Engineering problems — pre-sales, post-sale, and everywhere in between.")
 
 st.markdown("""
-Built by **Srabana Guha** — Staff SE, 12+ years across Uber, Walmart Connect, and Hulu.
-
 Use the sidebar (or the cards below) to try each tool. Both run fully in **Demo Mode**
 by default — no API key, no cost, no setup — so you can explore them immediately.
 """)

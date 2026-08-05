@@ -1,39 +1,34 @@
 # SE Toolkit
 
-A set of tools built to demonstrate practical Solutions Engineering workflows —
-pre-sales deal support, post-sale customer health, and everywhere in between.
-Runs as a single Streamlit app with multiple pages, all in **Demo Mode by
-default — no API key, no cost, no setup required.**
+A set of tools for common Solutions Engineering workflows: drafting RFP
+responses and monitoring integration health. Runs as a single Streamlit app
+with multiple pages, entirely in **Demo Mode by default — no API key, no
+cost, no setup required.**
 
 ## Tools included
 
 ### 📄 RFP Automation Tool
-AI-powered RFP response generator using Claude, grounded in a retrieval layer
-over past RFP answers — cuts down the hours SEs spend drafting consistent,
-accurate RFP responses under deadline pressure.
+Drafts RFP responses grounded in a retrieval layer over a knowledge base of
+past answers, so drafts stay consistent instead of an LLM improvising from
+scratch.
 
-- Single-question and bulk CSV modes
-- TF-IDF retrieval over a knowledge base of past answers, so drafts stay
-  consistent instead of the model improvising
+- Single-question mode and bulk CSV mode (upload many questions, get all
+  responses back in one CSV)
+- TF-IDF retrieval surfaces the most relevant past answers for each question
+  before drafting a response
+- Editable knowledge base — add entries in the UI or bulk-upload via CSV
 - Runs in Demo Mode (no key needed) or live mode with a Claude API key
 
 ### 📡 API Monitoring Dashboard
-A lightweight integration-health dashboard — the kind of view an SE hands to a
-customer post-deployment so they can self-serve status checks instead of
-filing support tickets.
+A lightweight integration-health dashboard showing live-style status, latency
+trends, and incidents across a set of integrations.
 
-- Live-style status, latency trends, and an incident log across 4 simulated
-  integrations
-- **Endpoint-level detail** — each service breaks down into its individual
-  endpoints (status, latency, uptime), not just a single aggregate number
-- **Customer Report tab** — a plain-language summary suitable to hand a
-  customer directly, plus a **downloadable PDF report** (generated with
-  reportlab, including an embedded latency chart and executive summary)
-- Configurable alert threshold, refreshable simulated data ticks
+- Endpoint-level detail — each integration breaks down into individual
+  endpoints with their own status, latency, and uptime
+- Customer Report tab — a plain-language summary, plus a downloadable PDF
+  report with an executive summary, comparison table, and latency chart
+- Configurable alert threshold, refreshable simulated data
 - Runs entirely on simulated data — no external services required
-- A distinct visual identity (dark control-room theme, signal-colored status
-  accents, monospace data figures) shared across the whole toolkit via a
-  common `theme.py` module
 
 ## Tech stack
 
@@ -41,22 +36,22 @@ filing support tickets.
 - **Claude (Anthropic API)** — RFP response generation (optional, live mode only)
 - **scikit-learn (TF-IDF)** — retrieval layer for the RFP tool
 - **numpy / pandas** — simulated monitoring data and bulk processing
-- **reportlab / matplotlib** — PDF customer report generation with embedded charts
+- **reportlab / matplotlib** — PDF report generation with embedded charts
 
 ## Running locally
 
 ```bash
-git clone <your-repo-url>
+git clone <this-repo-url>
 cd rfp-automation-tool
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Opens a home page with links to both tools. Everything runs in Demo Mode out
-of the box — no setup needed to explore either tool.
+This opens a home page linking to both tools. Everything runs in Demo Mode
+out of the box — no setup needed to explore either one.
 
 To use live Claude generation in the RFP tool instead of demo-mode retrieval,
-toggle Demo Mode off on that page and add a key:
+toggle Demo Mode off on that page and add an API key:
 
 ```bash
 cp .streamlit/secrets.toml.example .streamlit/secrets.toml
@@ -65,9 +60,9 @@ cp .streamlit/secrets.toml.example .streamlit/secrets.toml
 
 ## Deploying (free, ~5 minutes)
 
-1. Push this repo to GitHub (public repo is fine — `secrets.toml` is
-   gitignored, so your API key never gets committed)
-2. Go to [share.streamlit.io](https://share.streamlit.io), sign in with GitHub
+1. Push this repo to GitHub (public is fine — `secrets.toml` is gitignored,
+   so an API key never gets committed)
+2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub
 3. Click **New app**, select this repo and `app.py` as the entry point
 4. (Optional, only if using live Claude generation) Under **Advanced settings
    → Secrets**, add:
@@ -80,14 +75,19 @@ cp .streamlit/secrets.toml.example .streamlit/secrets.toml
 visitor after a sleep period waits ~20-30 seconds for it to wake up — this is
 normal, not a bug.
 
-## Sample data
+## Using the RFP Automation Tool
 
-- `knowledge_base.json` ships with 5 example RFP Q&A pairs (SSO, uptime SLA,
-  SOC 2, data residency, support) so the RFP tool's demo works out of the box
-- The monitoring dashboard generates its own simulated data on load, with a
-  refresh button to simulate a new data tick
+1. Open the **RFP Automation Tool** page from the home screen
+2. In the sidebar, review or expand the knowledge base (5 sample Q&A pairs
+   are included) — add your own via the "Add a past RFP answer" expander or
+   bulk-upload a CSV
+3. **Single question:** paste a question into the text box, optionally add
+   context, and click **Generate Response**
+4. **Bulk mode:** switch to the "Bulk Generate" tab, upload a CSV with a
+   `question` column (optional `context` column), and click **Generate All
+   Responses** — download the results as a CSV when done
 
-CSV format for bulk knowledge base upload (RFP tool):
+CSV format for bulk knowledge base upload:
 ```csv
 question,answer
 "Do you support SSO?","Yes, via SAML 2.0 and OAuth 2.0..."
@@ -99,12 +99,20 @@ question,context
 "What is your data retention policy?","Customer is in healthcare, cares about HIPAA"
 ```
 
-## Why this project
+## Using the API Monitoring Dashboard
 
-Built to demonstrate the kind of technical + business-facing tooling a
-Solutions Engineer builds for their own team: tools that save real hours, stay
-grounded in facts instead of hallucinating, and can be handed to a
-non-technical teammate — or a customer — without them touching code.
+1. Open the **API Monitoring Dashboard** page from the home screen
+2. The top row shows live-style status cards for each monitored integration
+3. Click into each tab to see its latency trend chart, endpoint-level
+   breakdown, and any incidents in the current window
+4. Use **Refresh** in the sidebar to simulate a new data tick
+5. Open the **Customer Report** tab for a plain-language summary, and click
+   **Generate PDF Report** to download a shareable report with an executive
+   summary, comparison table, and latency chart
 
----
-Built by Srabana Guha · Staff SE, 12+ years at Uber, Walmart Connect, and Hulu
+## Sample data
+
+- `knowledge_base.json` ships with 5 example RFP Q&A pairs (SSO, uptime SLA,
+  SOC 2, data residency, support) so the RFP tool works out of the box
+- The monitoring dashboard generates its own simulated data on load, with a
+  refresh button to simulate a new tick
